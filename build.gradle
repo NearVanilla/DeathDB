@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id "net.kyori.indra" version "2.0.6"
+}
+
+group 'near.vanilla.death.database'
+version '1.0'
+
+repositories {
+    google()
+    mavenCentral()
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+
+        // As of Gradle 5.1, you can limit this to only those
+        // dependencies you expect from it
+        content {
+            includeGroup 'org.bukkit'
+            includeGroup 'org.spigotmc'
+        }
+    }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+    maven { url = "https://jitpack.io" }
+    maven { url = "https://libraries.minecraft.net" }
+    maven { url = 'https://papermc.io/repo/repository/maven-public/' }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // Pick only one of these and read the comment in the repositories block.
+    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT' // The Spigot API with no shadowing. Requires the OSS repo.
+    implementation 'net.kyori:adventure-api:4.8.1'
+    implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+
+    // Commands
+    implementation 'cloud.commandframework:cloud-paper:1.5.0'
+    implementation 'cloud.commandframework:cloud-annotations:1.5.0'
+    implementation 'cloud.commandframework:cloud-minecraft-extras:1.5.0'
+
+    // Database
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.1'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+}

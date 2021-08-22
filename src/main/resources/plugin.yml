@@ -1,0 +1,23 @@
+main : near.vanilla.death.database.PluginLifecycle
+name : DeathDatabase
+version : 1.0
+authors : [DarkMikatron]
+api-version : 1.17
+
+commands :
+  ddb open:
+    description: Opens a dead inventory.
+    usage: ddb open jeb_
+    permission: deathdatabase.open
+  ddb open offline:
+    description: Opens an offline dead inventory.
+    usage: ddb open offline Dinnerbone
+    permission: deathdatabase.open
+  ddb restore:
+    description: Restores an offline dead inventory.
+    usage: ddb restore EthosLab
+    permission: deathdatabase.restore
+  ddb clear:
+    description: Clears an offline dead inventory.
+    usage: ddb clear _Cliff
+    permission: deathdatabase.clear
