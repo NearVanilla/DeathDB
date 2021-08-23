@@ -46,12 +46,12 @@ object DeathDatabase {
     operator fun get(player: Player) : List<ItemStack> {
         // Thread safe by setting val
         val jsonItems = this[player.uniqueId] ?: return emptyList()
-        return fromJSON(jsonItems)
+        return ItemSerializer.deserialize(jsonItems)
     }
 
     fun set(playerDeathEvent: PlayerDeathEvent) = set(playerDeathEvent.entity, playerDeathEvent.drops)
 
-    operator fun set(player: Player, items : List<ItemStack>) = set(player.uniqueId, toJSON(items))
+    operator fun set(player: Player, items : List<ItemStack>) = set(player.uniqueId, ItemSerializer.serialize(items))
 
     private operator fun get(uuid : UUID) : String? {
         var result : String? = ""
