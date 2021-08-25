@@ -1,10 +1,13 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
 plugins {
     id 'java'
-    id 'application'
-    id'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id'org.jetbrains.kotlin.jvm' version '1.5.21'
 }
 
-group 'near.vanilla.death.database'
+group 'com.nearvanilla.death.database'
 version '1.0'
 
 repositories {
@@ -19,10 +22,11 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
-    implementation 'net.kyori:adventure-api:4.8.1'
+    shadow gradleApi()
+    compileOnly "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
+    compileOnly 'net.kyori:adventure-api:4.8.1'
     implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
     // Commands
     implementation 'cloud.commandframework:cloud-paper:1.5.0'
@@ -44,8 +48,23 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+task relocateShadowJar(type : ConfigureShadowRelocation) {
+    target = tasks.shadowJar as ShadowJar
+    prefix = "com.nearvanilla.death.database.lib"
+}
 
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+tasks {
+    processResources {
+        filesMatching("plugin.yml") {
+            expand("version":rootProject.version)
+        }
+    }
+    shadowJar {
+        mergeServiceFiles()
+        dependsOn(tasks["relocateShadowJar"])
+        archiveClassifier.set("")
+    }
+    build {
+        dependsOn(shadowJar)
+    }
 }
