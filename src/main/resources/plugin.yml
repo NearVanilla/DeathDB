@@ -1,0 +1,5 @@
+main : com.nearvanilla.death.database.PluginLifecycle
+name : DeathDatabase
+version : ${version}
+authors : [DarkMikatron]
+api-version : 1.17

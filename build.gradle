@@ -1,0 +1,70 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
+plugins {
+    id 'java'
+    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id'org.jetbrains.kotlin.jvm' version '1.5.21'
+}
+
+group 'com.nearvanilla.death.database'
+version '1.0'
+
+repositories {
+    google()
+    mavenCentral()
+    mavenLocal()
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+    maven { url = "https://jitpack.io" }
+    maven { url = "https://libraries.minecraft.net" }
+    maven { url "https://papermc.io/repo/repository/maven-public/" }
+}
+
+dependencies {
+    shadow gradleApi()
+    compileOnly "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
+    compileOnly 'net.kyori:adventure-api:4.8.1'
+    implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
+    // Commands
+    implementation 'cloud.commandframework:cloud-paper:1.5.0'
+    implementation 'cloud.commandframework:cloud-annotations:1.5.0'
+    implementation 'cloud.commandframework:cloud-minecraft-extras:1.5.0'
+
+    // Database
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.1'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+task relocateShadowJar(type : ConfigureShadowRelocation) {
+    target = tasks.shadowJar as ShadowJar
+    prefix = "com.nearvanilla.death.database.lib"
+}
+
+tasks {
+    processResources {
+        filesMatching("plugin.yml") {
+            expand("version":rootProject.version)
+        }
+    }
+    shadowJar {
+        mergeServiceFiles()
+        dependsOn(tasks["relocateShadowJar"])
+        archiveClassifier.set("")
+    }
+    build {
+        dependsOn(shadowJar)
+    }
+}
