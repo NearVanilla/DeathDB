@@ -1,5 +1,5 @@
 name: DeathManager
-version: '${project.version}'
+version: '1.0'
 main: com.joshdev.deathmanager.DeathManager
 api-version: 1.19
 prefix: DeathMan
@@ -8,7 +8,8 @@ description: A simple plugin that allows for logging and manipulating the data o
 commands:
   showdeaths:
     description: Show the information of up to 5 of the most recent deaths of a player.
-    permission: deathmanager.admin
-  restoreinv:
-    description: Restore the inventory of a player, this should only be used after executing the showdeaths command.
-    permission: deathmanager.admin
+    permission: deathmanager.showdeaths
+  # Remove comments when implemented.
+  #restoreinv:
+  #  description: Restore the inventory of a player, this should only be used after executing the showdeaths command.
+  #  permission: deathmanager.admin

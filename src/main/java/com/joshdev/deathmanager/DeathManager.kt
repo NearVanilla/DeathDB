@@ -1,6 +1,5 @@
 package com.joshdev.deathmanager
 
-import com.joshdev.deathmanager.commands.RestoreInv
 import com.joshdev.deathmanager.commands.ShowDeaths
 import com.joshdev.deathmanager.events.OnPlayerDeath
 import com.joshdev.deathmanager.exceptions.DeathManagerException
@@ -14,55 +13,47 @@ import java.util.logging.Logger
 class DeathManager : JavaPlugin() {
 
     companion object{
-
-        // For logging shit
-        var pluginLogger: Logger? = null
+        lateinit var pluginLogger: Logger
             private set
-
-        // For saving shit
-        var dbConnection: Connection? = null
+        lateinit var dbConnection: Connection
             private set
-
+        lateinit var pluginInstance: DeathManager
+            private set
+        fun isLoggerInitialized(): Boolean{
+            return ::pluginLogger.isInitialized
+        }
+        fun isConnectionInitialized(): Boolean{
+            return ::dbConnection.isInitialized
+        }
+        fun isPluginInstanceInitialized(): Boolean{
+            return ::pluginInstance.isInitialized
+        }
     }
 
     override fun onEnable() {
-
-        pluginLogger = logger // Set plugin logger object.
-
-        // Database Connection Setup
-
-        if(!dataFolder.exists()){ // If data folder doesn't exist.
-
-            dataFolder.mkdir() // Create it.
-
-        } // End of if statement.
-
-        val dbPath = dataFolder.absolutePath + "/data.db" // Get absolute path of data folder and concatenate db file.
-        val dbFile = File(dbPath) // Create file object from path.
-
-        if(!dbFile.exists()){ // If file doesn't exist.
-
-            dbFile.createNewFile() // Create it.
-
-        } // End of if statement.
-
-        // Use elvis operator to establish connection to database or throw exception.
-        val connection = DriverManager.getConnection("jdbc:sqlite:$dbPath") ?: throw DeathManagerException("Connection to database couldn't be established.") // Get the SQLite Connection to the database.
-
-        dbConnection = connection // Set connection object.
-
+        logger.info("Setting up DeathManager...")
+        pluginLogger = logger
+        pluginInstance = this
+        if(!dataFolder.exists()){
+            dataFolder.mkdir()
+        }
+        val dbPath = dataFolder.absolutePath + "/data.db"
+        val dbFile = File(dbPath)
+        if(!dbFile.exists()){
+            dbFile.createNewFile()
+        }
+        val connection = DriverManager.getConnection("jdbc:sqlite:$dbPath") ?: throw DeathManagerException("Connection to database couldn't be established.")
+        dbConnection = connection
+        val stmt = connection.createStatement()
+        stmt.execute("CREATE TABLE IF NOT EXISTS deaths(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, uniqueId TEXT NOT NULL, timeOfDeath INTEGER NOT NULL, posX REAL NOT NULL, posY REAL NOT NULL, posZ REAL NOT NULL, worldName TEXT NOT NULL, serializedInventory TEXT NOT NULL);")
         server.pluginManager.registerEvents(OnPlayerDeath(), this) // Register on player death event.
-        this.getCommand("showdeaths")?.setExecutor(ShowDeaths()) // Register show deaths command.
-        this.getCommand("restoreinv")?.setExecutor(RestoreInv()) // Register restore inv command.
-
+        // TODO Register new commands here.
+        this.getCommand("showdeaths")?.setExecutor(ShowDeaths())
+        if(!isConnectionInitialized() || !isLoggerInitialized() || !isPluginInstanceInitialized()){
+            throw DeathManagerException("The Database Connection, Logger or Plugin Instance has not initialized properly.")
+        }
         logger.info("DeathManager has been enabled, enjoy!") // Log that plugin is enabled si.
-
     }
 
-    override fun onDisable() {
-
-        logger.info("DeathManager has been disabled, goodbye!")
-
-    }
-
+    override fun onDisable() { logger.info("DeathManager has been disabled, goodbye!") }
 }
