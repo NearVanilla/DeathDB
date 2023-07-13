@@ -1,43 +1,39 @@
+/* Licensed under GNU General Public License v3.0 */
 package com.joshdev.deathmanager.libs
 
-import org.bukkit.Bukkit
-import org.bukkit.entity.Item
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
-import org.bukkit.util.io.BukkitObjectInputStream
-import org.bukkit.util.io.BukkitObjectOutputStream
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.util.Base64
+import org.json.simple.JSONArray
+import org.json.simple.JSONObject
+import org.json.simple.parser.JSONParser
+import java.util.Arrays
 
-class Serialization{
-
-    companion object{
-        fun Serialize(inv: PlayerInventory): String {
-            val outputStream = ByteArrayOutputStream()
-            val dataOutput = BukkitObjectOutputStream(outputStream)
-            dataOutput.writeInt(inv.size)
-            for(i in 0 until inv.size){
-                dataOutput.writeObject(inv.getItem(i))
+class Serialization {
+    companion object {
+        fun Serialize(inv: PlayerInventory): String { // TODO Account for Armor and Shield slots.
+            val serializedItems = JSONArray()
+            for (item in inv.contents.filterIsInstance<ItemStack>()) {
+                serializedItems.add(Arrays.toString(item.serializeAsBytes()))
             }
-            dataOutput.close()
-            return Base64Coder.encodeLines(outputStream.toByteArray())
+            val mainObject = JSONObject()
+            mainObject["items"] = serializedItems
+            return mainObject.toString()
         }
-        fun Deserialize(inv: String): List<ItemStack> {
-            val dataInput = BukkitObjectInputStream(ByteArrayInputStream(Base64Coder.decodeLines(inv)))
-            var listOfItems = mutableListOf<ItemStack>()
-            for(i in 0 until dataInput.readInt()){
-                var currentObject = dataInput.readObject()
-                if(currentObject != null){
-                    listOfItems.add(dataInput.readObject() as ItemStack)
-                }
+        fun Deserialize(inv: String): ArrayList<ItemStack> {
+            val parser = JSONParser()
+            val parsedInventory = parser.parse(inv) as JSONObject
+            val serializedItems = parsedInventory["items"] as JSONArray
+            val listOfItems = arrayListOf<ItemStack>()
+            for (i in 0 until serializedItems.count()) {
+                val item = serializedItems[i] as String
+                val itemBytes = item
+                    .removeSurrounding("[", "]")
+                    .split(", ")
+                    .map { it.toByte() }
+                    .toByteArray()
+                listOfItems.add(ItemStack.deserializeBytes(itemBytes))
             }
             return listOfItems
         }
-
     }
-
-
 }

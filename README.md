@@ -11,7 +11,7 @@ an SQLite Database:
 - The name of the world the player died in.
 - A serialized copy of the players inventory.
 
-This information can then be retrieved at a later date by Staff Members. They also have the option of 
+This information can then be retrieved at a later date by Staff Members. They also have the option of
 restoring the players inventory, if they deem necessary.
 
 ## Compilation

@@ -62,14 +62,14 @@ tasks.build{
     dependsOn("shadowJar")
 }
 
-//spotless {
-//    format("misc") {
-//        target(listOf("**/*.gradle", "**/*.md"))
-//        trimTrailingWhitespace()
-//        indentWithSpaces(4)
-//    }
-//    kotlin {
-//        ktlint("0.50.0")
-//        licenseHeader("/* Licensed under GNU General Public License v3.0 */")
-//    }
-//}
+spotless {
+    format("misc") {
+        target(listOf("**/*.gradle", "**/*.md"))
+        trimTrailingWhitespace()
+        indentWithSpaces(4)
+    }
+    kotlin {
+        ktlint("0.48.2") // 0.49 and 0.50 don't work for some reason.
+        licenseHeader("/* Licensed under GNU General Public License v3.0 */")
+    }
+}

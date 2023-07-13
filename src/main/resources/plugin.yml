@@ -9,7 +9,6 @@ commands:
   showdeaths:
     description: Show the information of up to 5 of the most recent deaths of a player.
     permission: deathmanager.showdeaths
-  # Remove comments when implemented.
-  #restoreinv:
-  #  description: Restore the inventory of a player, this should only be used after executing the showdeaths command.
-  #  permission: deathmanager.admin
+  restoreinventory:
+    description: Restore the inventory of a player, this should only be used after executing the showdeaths command.
+    permission: deathmanager.admin
