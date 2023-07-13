@@ -20,8 +20,7 @@ class ShowDeaths : CommandExecutor {
         if (sender is Player) {
             val player: Player = sender
             if (player.hasPermission("deathmanager.showdeaths")) {
-                val targetUsername = args?.get(0)
-                if (targetUsername == null) {
+                if (args == null || args.count() != 1) {
                     val noTargetComponent = Component.text(
                         "Please provide a username of the person you would like to see deaths for.",
                         NamedTextColor.RED,
@@ -30,7 +29,7 @@ class ShowDeaths : CommandExecutor {
                     player.sendMessage(noTargetComponent)
                     return true
                 } else {
-                    val targetPlayer = DeathManager.pluginInstance.server.getOfflinePlayer(targetUsername)
+                    val targetPlayer = DeathManager.pluginInstance.server.getOfflinePlayer(args[0])
                     if (!targetPlayer.hasPlayedBefore()) {
                         val neverPlayedComponent = Component.text(
                             "This player has never been on this server before.",
@@ -50,15 +49,15 @@ class ShowDeaths : CommandExecutor {
                         )
                         var deathIndex = 1
                         while (results.next()) {
-                            // Convert epoch second back to human-readable time.
-                            val dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(results.getInt(2).toLong()), ZoneId.systemDefault())
+                            val dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(results.getInt("timeOfDeath").toLong()), ZoneId.systemDefault())
                             val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy @ HH:mm")
                             val formattedDateTime = dateTime.format(formatter)
-                            // Format position
-                            val formattedPosition = "${results.getDouble(3)}, ${results.getDouble(4)}, ${results.getDouble(5)}"
-                            // Create component
+                            val posX = String.format("%.3f", results.getDouble("posX"))
+                            val posY = String.format("%.3f", results.getDouble("posY"))
+                            val posZ = String.format("%.3f", results.getDouble("posZ"))
+                            val formattedPosition = "$posX, $posY, $posZ"
                             val entryComponent = Component.text(
-                                "$deathIndex) $formattedDateTime | $formattedPosition | [View Inventory]\n", // TODO Make clickable button to go to inventory.
+                                "$deathIndex) $formattedDateTime | $formattedPosition\n", // TODO Make clickable button to go to inventory.
                                 NamedTextColor.GRAY,
                                 TextDecoration.BOLD,
                             )

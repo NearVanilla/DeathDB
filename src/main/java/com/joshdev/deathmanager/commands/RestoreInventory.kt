@@ -24,9 +24,7 @@ class RestoreInventory : CommandExecutor {
                 player.sendMessage(invalidPermissionComponent)
                 return true
             } else {
-                val targetUsername = args?.get(0)
-                val targetIndex = args?.get(1)
-                if (targetUsername == null || targetIndex == null) {
+                if (args == null || args.count() != 2) {
                     val invalidArgsComponent = Component.text(
                         "One or more of the required arguments have not been provided.",
                         NamedTextColor.RED,
@@ -35,9 +33,27 @@ class RestoreInventory : CommandExecutor {
                     player.sendMessage(invalidArgsComponent)
                     return true
                 } else {
-                    val targetPlayer = DeathManager.pluginInstance.server.getOfflinePlayer(targetUsername)
-
-                    if (!targetPlayer.isOnline) {
+                    val targetUsername = args[0]
+                    val convertedTargetIndex = args[1].toIntOrNull()
+                    if (convertedTargetIndex == null) {
+                        val invalidIndexComponent = Component.text(
+                            "The index you have provided is not valid.",
+                            NamedTextColor.RED,
+                            TextDecoration.BOLD,
+                        )
+                        player.sendMessage(invalidIndexComponent)
+                        return true
+                    } else if (convertedTargetIndex > 5 || convertedTargetIndex < 1) {
+                        val invalidRangeComponent = Component.text(
+                            "Your index must be between 1 and 5.",
+                            NamedTextColor.RED,
+                            TextDecoration.BOLD,
+                        )
+                        player.sendMessage(invalidRangeComponent)
+                        return true
+                    }
+                    val targetOfflinePlayer = DeathManager.pluginInstance.server.getOfflinePlayer(targetUsername)
+                    if (!targetOfflinePlayer.isOnline) {
                         val offlineComponent = Component.text(
                             "This player is offline.",
                             NamedTextColor.RED,
@@ -45,7 +61,7 @@ class RestoreInventory : CommandExecutor {
                         )
                         player.sendMessage(offlineComponent)
                         return true
-                    } else if (!targetPlayer.hasPlayedBefore()) {
+                    } else if (!targetOfflinePlayer.hasPlayedBefore()) {
                         val neverPlayedComponent = Component.text(
                             "This player has never been on this server before.",
                             NamedTextColor.RED,
@@ -54,46 +70,64 @@ class RestoreInventory : CommandExecutor {
                         player.sendMessage(neverPlayedComponent)
                         return true
                     } else {
-                        val preparedSelectStatement = DeathManager.dbConnection.prepareStatement("SELECT * FROM deaths WHERE uniqueId = ? ORDER BY timeOfDeath DESC LIMIT 5") // Ignore SQL Dialect warning.
-                        preparedSelectStatement.setString(1, targetPlayer.uniqueId.toString())
+                        val preparedSelectStatement =
+                            DeathManager.dbConnection.prepareStatement("SELECT * FROM deaths WHERE uniqueId = ? ORDER BY timeOfDeath DESC LIMIT 5") // Ignore SQL Dialect warning.
+                        preparedSelectStatement.setString(1, targetOfflinePlayer.uniqueId.toString())
                         val results = preparedSelectStatement.executeQuery()
                         if (results == null) {
                             val noResultsComponent = Component.text(
-                                "Couldn't find any deaths for this user, have they died on the server yet?",
+                                "No results returned for user.",
                                 NamedTextColor.RED,
                                 TextDecoration.BOLD,
                             )
                             player.sendMessage(noResultsComponent)
                             return true
                         } else {
-                            var resultIndex = 1
-                            var resultInventory: String? = null
+                            var resultsIndex = 1
+                            var serializedInventory: String? = null
                             while (results.next()) {
-                                if (resultIndex.toString() == targetIndex) {
-                                    resultInventory = results.getString("serializedInventory")
+                                if (resultsIndex == convertedTargetIndex) {
+                                    serializedInventory = results.getString("serializedInventory")
+                                    break
                                 }
-                                resultIndex++
+                                resultsIndex += 1
                             }
-                            if (resultInventory == null) {
-                                val noResultComponent = Component.text(
-                                    "Could not find a record with that index.",
+                            if (serializedInventory == null) {
+                                val noInventoryComponent = Component.text(
+                                    "No inventory found.",
                                     NamedTextColor.RED,
                                     TextDecoration.BOLD,
                                 )
-                                player.sendMessage(noResultComponent)
+                                player.sendMessage(noInventoryComponent)
                                 return true
                             } else {
-                                val deserializedInventory = Serialization.Deserialize(resultInventory)
-                                for (itemStack in deserializedInventory) {
-                                    targetPlayer.player?.inventory?.addItem(itemStack)
+                                val targetOnlinePlayer = targetOfflinePlayer.player
+                                if (targetOnlinePlayer != null) {
+                                    val deserializedInventory = Serialization.Deserialize(serializedInventory)
+                                    val currentInventory = targetOnlinePlayer.inventory.contents
+                                    targetOnlinePlayer.inventory.clear()
+                                    for (item in currentInventory) {
+                                        if (item != null) {
+                                            targetOnlinePlayer.world.dropItem(targetOnlinePlayer.location, item)
+                                        }
+                                    }
+                                    targetOnlinePlayer.inventory.contents = deserializedInventory
+                                    val successComponent = Component.text(
+                                        "Sucessfully restored inventory.",
+                                        NamedTextColor.GREEN,
+                                        TextDecoration.BOLD,
+                                    )
+                                    player.sendMessage(successComponent)
+                                    return true
+                                } else {
+                                    val invalidPlayerComponent = Component.text(
+                                        "Failed to find the player.",
+                                        NamedTextColor.RED,
+                                        TextDecoration.BOLD,
+                                    )
+                                    player.sendMessage(invalidPlayerComponent)
+                                    return true
                                 }
-                                val successComponent = Component.text(
-                                    "This players inventory is successfully restored!",
-                                    NamedTextColor.GREEN,
-                                    TextDecoration.BOLD,
-                                )
-                                player.sendMessage(successComponent)
-                                return true
                             }
                         }
                     }
