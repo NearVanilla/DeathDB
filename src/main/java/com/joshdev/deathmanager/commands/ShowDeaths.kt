@@ -39,9 +39,7 @@ class ShowDeaths : CommandExecutor {
                         player.sendMessage(neverPlayedComponent)
                         return true
                     } else {
-                        val preparedSelectStatement = DeathManager.dbConnection.prepareStatement("SELECT * FROM deaths WHERE uniqueId = ? ORDER BY timeOfDeath DESC LIMIT 5") // Ignore SQL Dialect warning.
-                        preparedSelectStatement.setString(1, targetPlayer.uniqueId.toString())
-                        val results = preparedSelectStatement.executeQuery()
+                        val results = DeathManager.dbWrapper.getPlayerInformation(targetPlayer as Player)
                         var deathListComponent = Component.text(
                             "List of Deaths\n===============\n",
                             NamedTextColor.GRAY,
