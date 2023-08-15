@@ -3,9 +3,6 @@ package com.joshdev.deathmanager.events
 
 import com.joshdev.deathmanager.DeathManager
 import com.joshdev.deathmanager.libs.Serialization
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -17,7 +14,7 @@ class OnPlayerDeath : Listener {
     fun onPlayerDeath(event: PlayerDeathEvent) {
         val player = event.player
         val connection = DeathManager.dbConnection
-        val serializedInventory = Serialization.Serialize(player.inventory)
+        val serializedInventory = Serialization.Serialize(player.inventory.contents)
         try {
             val stmt = connection.prepareStatement("INSERT INTO deaths VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)")
             stmt.setString(1, player.uniqueId.toString())
@@ -29,15 +26,7 @@ class OnPlayerDeath : Listener {
             stmt.setString(7, serializedInventory)
             stmt.execute()
         } catch (e: Exception) { // Could be SQLException but execute can also throw a timeout exception.
-            val failedInsertComponent = Component.text(
-                "An error was encountered while attempting to save your death to the database. This death has not ben saved.",
-                NamedTextColor.RED,
-                TextDecoration.BOLD,
-            )
-            player.sendMessage(failedInsertComponent)
             DeathManager.pluginLogger.warning("Error occurred on player death.\n${e.message}")
         }
-        val successComponent = Component.text("Your death has been saved.", NamedTextColor.GREEN, TextDecoration.BOLD)
-        player.sendMessage(successComponent)
     }
 }

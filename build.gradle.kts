@@ -5,11 +5,13 @@ plugins {
     id("com.diffplug.spotless") version "6.19.0"
 }
 
-group = "com.joshdev"
+group = "com.nearvanilla"
 version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    // See line 28.
+    // maven("https://oss.sonatype.org/content/repositories/snapshots") // For cloud
     maven {
         name = "papermc-repo"
         url = uri("https://repo.papermc.io/repository/maven-public/")
@@ -23,6 +25,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    // Seems to produce a build error at the moment, not sure why.
+    // implementation("cloud.commandframework", "cloud-PLATFORM", "1.8.3")
 }
 
 val targetJavaVersion = 17

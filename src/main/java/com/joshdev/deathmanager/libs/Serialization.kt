@@ -3,18 +3,21 @@ package com.joshdev.deathmanager.libs
 
 import com.joshdev.deathmanager.DeathManager
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.PlayerInventory
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
-import java.util.Arrays
+import java.util.*
 
 class Serialization {
     companion object {
-        fun Serialize(inv: PlayerInventory): String { // TODO Account for Armor and Shield slots.
+        fun Serialize(inv: Array<ItemStack?>): String { // TODO Account for Armor and Shield slots.
             val serializedItems = JSONArray()
-            for (item in inv.contents.filterIsInstance<ItemStack>()) {
-                serializedItems.add(Arrays.toString(item.serializeAsBytes()))
+            for (item in inv) {
+                if (item != null) {
+                    val serializedItem = item.serializeAsBytes()
+                    val encodedItem = Base64.getEncoder().encodeToString(serializedItem)
+                    serializedItems.add(encodedItem)
+                }
             }
             val mainObject = JSONObject()
             mainObject["items"] = serializedItems
@@ -28,12 +31,8 @@ class Serialization {
             for (i in 0 until serializedItems.count()) {
                 try {
                     val item = serializedItems[i] as String
-                    val itemBytes = item
-                        .removeSurrounding("[", "]")
-                        .split(", ")
-                        .map { it.toByte() }
-                        .toByteArray()
-                    listOfItems = listOfItems.plus(ItemStack.deserializeBytes(itemBytes))
+                    val decodedItem = Base64.getDecoder().decode(item)
+                    listOfItems = listOfItems.plus(ItemStack.deserializeBytes(decodedItem))
                 } catch (e: Exception) {
                     DeathManager.pluginLogger.info("Exception caught when processing an item during deserialization.\n${e.message}")
                 }
