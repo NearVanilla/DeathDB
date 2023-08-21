@@ -16,15 +16,14 @@ class DatabaseWrapper(dbPath: String) {
                 databaseConnection.prepareStatement("CREATE TABLE IF NOT EXISTS deaths(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, uniqueId TEXT NOT NULL, timeOfDeath INTEGER NOT NULL, posX REAL NOT NULL, posY REAL NOT NULL, posZ REAL NOT NULL, worldName TEXT NOT NULL, serializedInventory TEXT NOT NULL)")
                     ?: throw DeathManagerException("Failed to prepare the create table statement.")
             createTableStmt.execute()
-        } catch(e: Exception){
-
+        } catch (e: Exception) {
         }
     }
 
     fun addDeathRecord(playerWhoDied: Player) {
         val addDeathStmt = databaseConnection.prepareStatement("INSERT INTO deaths VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)") ?: throw DeathManagerException("Failed to prepare the add death statement.")
         addDeathStmt.setString(1, playerWhoDied.uniqueId.toString())
-        addDeathStmt.setInt(2, Instant.now().epochSecond.toInt())
+        addDeathStmt.setLong(2, Instant.now().epochSecond)
         addDeathStmt.setDouble(3, playerWhoDied.location.x)
         addDeathStmt.setDouble(4, playerWhoDied.location.y)
         addDeathStmt.setDouble(5, playerWhoDied.location.z)
