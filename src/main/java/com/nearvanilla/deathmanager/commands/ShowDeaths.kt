@@ -30,7 +30,7 @@ class ShowDeaths : CommandExecutor {
                     return true
                 } else {
                     val targetPlayer = DeathManager.pluginInstance.server.getOfflinePlayer(args[0])
-                    if (!targetPlayer.hasPlayedBefore()) {
+                    if (!targetPlayer.hasPlayedBefore() && !targetPlayer.isOnline) { // isOnline ensures it isn't just the players first session.
                         val neverPlayedComponent = Component.text(
                             "This player has never been on this server before.",
                             NamedTextColor.RED,
