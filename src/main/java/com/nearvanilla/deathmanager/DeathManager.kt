@@ -1,11 +1,11 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.joshdev.deathmanager
+package com.nearvanilla.deathmanager
 
-import com.joshdev.deathmanager.commands.RestoreInventory
-import com.joshdev.deathmanager.commands.ShowDeaths
-import com.joshdev.deathmanager.events.OnPlayerDeath
-import com.joshdev.deathmanager.exceptions.DeathManagerException
-import com.joshdev.deathmanager.libs.DatabaseWrapper
+import com.nearvanilla.deathmanager.commands.RestoreInventory
+import com.nearvanilla.deathmanager.commands.ShowDeaths
+import com.nearvanilla.deathmanager.events.OnPlayerDeath
+import com.nearvanilla.deathmanager.exceptions.DeathManagerException
+import com.nearvanilla.deathmanager.libs.DatabaseWrapper
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.util.logging.Logger
@@ -21,13 +21,13 @@ class DeathManager : JavaPlugin() {
         lateinit var pluginInstance: DeathManager
             private set
         fun isLoggerInitialized(): Boolean {
-            return ::pluginLogger.isInitialized
+            return Companion::pluginLogger.isInitialized
         }
         fun isWrapperInitialized(): Boolean {
-            return ::dbWrapper.isInitialized
+            return Companion::dbWrapper.isInitialized
         }
         fun isPluginInstanceInitialized(): Boolean {
-            return ::pluginInstance.isInitialized
+            return Companion::pluginInstance.isInitialized
         }
     }
 

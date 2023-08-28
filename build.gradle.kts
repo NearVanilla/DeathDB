@@ -25,8 +25,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    // Seems to produce a build error at the moment, not sure why.
-    // implementation("cloud.commandframework", "cloud-PLATFORM", "1.8.3")
+    // TODO Implement Cloud.
+    // implementation("cloud.commandframework", "cloud-paper", "1.8.3")
 }
 
 val targetJavaVersion = 17

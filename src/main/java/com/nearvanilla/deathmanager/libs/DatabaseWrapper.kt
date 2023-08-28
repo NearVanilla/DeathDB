@@ -1,7 +1,7 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.joshdev.deathmanager.libs
+package com.nearvanilla.deathmanager.libs
 
-import com.joshdev.deathmanager.exceptions.DeathManagerException
+import com.nearvanilla.deathmanager.exceptions.DeathManagerException
 import org.bukkit.entity.Player
 import java.sql.DriverManager
 import java.sql.ResultSet

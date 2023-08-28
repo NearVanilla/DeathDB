@@ -1,7 +1,7 @@
 name: DeathManager
 version: '1.0'
-main: com.joshdev.deathmanager.DeathManager
-api-version: 1.19
+main: com.nearvanilla.deathmanager.DeathManager
+api-version: 1.20
 prefix: DeathMan
 authors: [ 105hua ]
 description: A simple plugin that allows for logging and manipulating the data of player deaths.

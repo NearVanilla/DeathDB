@@ -1,8 +1,8 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.joshdev.deathmanager.commands
+package com.nearvanilla.deathmanager.commands
 
-import com.joshdev.deathmanager.DeathManager
-import com.joshdev.deathmanager.libs.Serialization
+import com.nearvanilla.deathmanager.DeathManager
+import com.nearvanilla.deathmanager.libs.Serialization
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration

@@ -1,7 +1,7 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.joshdev.deathmanager.events
+package com.nearvanilla.deathmanager.events
 
-import com.joshdev.deathmanager.DeathManager
+import com.nearvanilla.deathmanager.DeathManager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent

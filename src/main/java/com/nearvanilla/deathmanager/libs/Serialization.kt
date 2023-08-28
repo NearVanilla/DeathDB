@@ -1,7 +1,7 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.joshdev.deathmanager.libs
+package com.nearvanilla.deathmanager.libs
 
-import com.joshdev.deathmanager.DeathManager
+import com.nearvanilla.deathmanager.DeathManager
 import org.bukkit.inventory.ItemStack
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
