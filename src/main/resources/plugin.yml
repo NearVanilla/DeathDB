@@ -5,10 +5,10 @@ api-version: 1.20
 prefix: DeathMan
 authors: [ 105hua ]
 description: A simple plugin that allows for logging and manipulating the data of player deaths.
-commands:
-  showdeaths:
-    description: Show the information of up to 5 of the most recent deaths of a player.
-    permission: deathmanager.showdeaths
-  restoreinventory:
-    description: Restore the inventory of a player, this should only be used after executing the showdeaths command.
-    permission: deathmanager.admin
+#commands:
+#  showdeaths:
+#    description: Show the information of up to 5 of the most recent deaths of a player.
+#    permission: deathmanager.showdeaths
+#  restoreinventory:
+#    description: Restore the inventory of a player, this should only be used after executing the showdeaths command.
+#    permission: deathmanager.admin
