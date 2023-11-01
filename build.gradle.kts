@@ -10,8 +10,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    // See line 28.
-    // maven("https://oss.sonatype.org/content/repositories/snapshots") // For cloud
+    maven("https://oss.sonatype.org/content/repositories/snapshots") // For cloud
     maven {
         name = "papermc-repo"
         url = uri("https://repo.papermc.io/repository/maven-public/")
@@ -25,8 +24,9 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    // TODO Implement Cloud.
-    // implementation("cloud.commandframework", "cloud-paper", "1.8.3")
+    implementation("cloud.commandframework", "cloud-paper", "1.8.3")
+    implementation("cloud.commandframework:cloud-annotations:1.7.1")
+    annotationProcessor("cloud.commandframework:cloud-annotations:1.7.1")
 }
 
 val targetJavaVersion = 17

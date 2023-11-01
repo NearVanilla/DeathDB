@@ -1,7 +1,7 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.nearvanilla.deathmanager.libs
+package com.nearvanilla.deathdb.libs
 
-import com.nearvanilla.deathmanager.DeathManager
+import com.nearvanilla.deathdb.DeathDB
 import org.bukkit.inventory.ItemStack
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
@@ -34,7 +34,7 @@ class Serialization {
                     val decodedItem = Base64.getDecoder().decode(item)
                     listOfItems = listOfItems.plus(ItemStack.deserializeBytes(decodedItem))
                 } catch (e: Exception) {
-                    DeathManager.pluginLogger.info("Exception caught when processing an item during deserialization.\n${e.message}")
+                    DeathDB.pluginLogger.info("Exception caught when processing an item during deserialization.\n${e.message}")
                 }
             }
             return listOfItems
