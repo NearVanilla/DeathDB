@@ -1,13 +1,13 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.nearvanilla.deathmanager.commands
+package com.nearvanilla.deathdb.commands
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.processing.CommandContainer
-import com.nearvanilla.deathmanager.DeathManager
-import com.nearvanilla.deathmanager.libs.Serialization
+import com.nearvanilla.deathdb.DeathDB
+import com.nearvanilla.deathdb.libs.Serialization
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 class RestoreInventory {
     @CommandDescription("Restores the inventory of a given player.")
     @CommandMethod("restoreinventory|ri <player_name> <index>")
-    @CommandPermission("deathmanager.restoreinventory")
+    @CommandPermission("deathdb.restoreinventory")
     @Suppress("unused")
     fun restoreInventoryCommand(
         sender: CommandSender,
@@ -32,7 +32,7 @@ class RestoreInventory {
             return
         }
         val player: Player = sender
-        val targetPlayer = DeathManager.pluginInstance.server.getOfflinePlayer(playerName)
+        val targetPlayer = DeathDB.pluginInstance.server.getOfflinePlayer(playerName)
         // If target is offline.
         if (!targetPlayer.isOnline) {
             val playerOfflineMsg = Component.text(
@@ -54,7 +54,7 @@ class RestoreInventory {
             return
         }
         // Restore Inventory.
-        val results = DeathManager.dbWrapper.getPlayerInformation(targetPlayer as Player)
+        val results = DeathDB.dbWrapper.getPlayerInformation(targetPlayer as Player)
         var resultIndex = 1
         var serializedInventory: String? = null
         while (results.next()) {

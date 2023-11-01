@@ -1,5 +1,5 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.nearvanilla.deathmanager
+package com.nearvanilla.deathdb
 
 import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.arguments.parser.ParserParameters
@@ -7,11 +7,11 @@ import cloud.commandframework.arguments.parser.StandardParameters
 import cloud.commandframework.execution.CommandExecutionCoordinator
 import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.paper.PaperCommandManager
-import com.nearvanilla.deathmanager.commands.RestoreInventory
-import com.nearvanilla.deathmanager.commands.ShowDeaths
-import com.nearvanilla.deathmanager.events.OnPlayerDeath
-import com.nearvanilla.deathmanager.exceptions.DeathManagerException
-import com.nearvanilla.deathmanager.libs.DatabaseWrapper
+import com.nearvanilla.deathdb.commands.RestoreInventory
+import com.nearvanilla.deathdb.commands.ShowDeaths
+import com.nearvanilla.deathdb.events.OnPlayerDeath
+import com.nearvanilla.deathdb.exceptions.DeathDBException
+import com.nearvanilla.deathdb.libs.DatabaseWrapper
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -19,14 +19,14 @@ import java.util.function.Function
 import java.util.logging.Logger
 
 @Suppress("UNUSED") // Main class comes up as unused when it actually is, Kotlin dumb si
-class DeathManager : JavaPlugin() {
+class DeathDB : JavaPlugin() {
 
     companion object {
         lateinit var pluginLogger: Logger
             private set
         lateinit var dbWrapper: DatabaseWrapper
             private set
-        lateinit var pluginInstance: DeathManager
+        lateinit var pluginInstance: DeathDB
             private set
         fun isLoggerInitialized(): Boolean {
             return Companion::pluginLogger.isInitialized
@@ -45,7 +45,7 @@ class DeathManager : JavaPlugin() {
     private lateinit var commandMetaFunction: Function<ParserParameters, CommandMeta>
 
     override fun onEnable() {
-        logger.info("Setting up DeathManager...")
+        logger.info("Setting up DeathDB...")
         commandManager = PaperCommandManager(
             this,
             CommandExecutionCoordinator.simpleCoordinator(),
@@ -82,10 +82,10 @@ class DeathManager : JavaPlugin() {
         dbWrapper.createDeathsTable()
         server.pluginManager.registerEvents(OnPlayerDeath(), this)
         if (!isWrapperInitialized() || !isLoggerInitialized() || !isPluginInstanceInitialized()) {
-            throw DeathManagerException("The Database Wrapper, Logger or Plugin Instance has not initialized properly.")
+            throw DeathDBException("The Database Wrapper, Logger or Plugin Instance has not initialized properly.")
         }
-        logger.info("DeathManager has been enabled, enjoy!") // Log that plugin is enabled si.
+        logger.info("DeathDB has been enabled, enjoy!") // Log that plugin is enabled si.
     }
 
-    override fun onDisable() { logger.info("DeathManager has been disabled, goodbye!") }
+    override fun onDisable() { logger.info("DeathDB has been disabled, goodbye!") }
 }

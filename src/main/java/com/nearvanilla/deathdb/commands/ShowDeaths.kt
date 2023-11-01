@@ -1,12 +1,12 @@
 /* Licensed under GNU General Public License v3.0 */
-package com.nearvanilla.deathmanager.commands
+package com.nearvanilla.deathdb.commands
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.processing.CommandContainer
-import com.nearvanilla.deathmanager.DeathManager
+import com.nearvanilla.deathdb.DeathDB
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 @CommandContainer
 class ShowDeaths {
     @CommandDescription("Show the most recent deaths of a player.")
-    @CommandPermission("deathmanager.showdeaths")
+    @CommandPermission("deathdb.showdeaths")
     @CommandMethod("showdeaths|sd <player_name>")
     @Suppress("unused")
     fun showDeathsCommand(
@@ -34,7 +34,7 @@ class ShowDeaths {
             return
         }
         val player: Player = sender
-        val targetPlayer: OfflinePlayer = DeathManager.pluginInstance.server.getOfflinePlayer(playerName)
+        val targetPlayer: OfflinePlayer = DeathDB.pluginInstance.server.getOfflinePlayer(playerName)
         if (!targetPlayer.hasPlayedBefore() && !targetPlayer.isOnline) {
             val neverPlayedMsg = Component.text(
                 "This player has never been on this server before.",
@@ -44,7 +44,7 @@ class ShowDeaths {
             player.sendMessage(neverPlayedMsg)
             return
         } else {
-            val results = DeathManager.dbWrapper.getPlayerInformation(targetPlayer as Player)
+            val results = DeathDB.dbWrapper.getPlayerInformation(targetPlayer as Player)
             var deathListMsg = Component.text(
                 "List of Deaths\n===============\n",
                 NamedTextColor.GRAY,

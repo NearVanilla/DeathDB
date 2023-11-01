@@ -1,1 +1,1 @@
-rootProject.name = "DeathManager"
+rootProject.name = "DeathDB"

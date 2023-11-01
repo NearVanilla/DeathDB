@@ -1,10 +1,10 @@
-# DeathManager
+# DeathDB
 
 ## About
 
-DeathManager is a plugin that allows Staff Members to log data about Player Deaths.
+DeathDB is a plugin that allows Staff Members to log data about Player Deaths.
 
-When a player dies, DeathManager will log the following information to a Table with the name of their UUID in
+When a player dies, DeathDB will log the following information to a Table with the name of their UUID in
 an SQLite Database:
 
 - The location (X, Y, Z) of the death.
