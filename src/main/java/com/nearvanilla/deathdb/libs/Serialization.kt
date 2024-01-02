@@ -10,7 +10,7 @@ import java.util.*
 
 class Serialization {
     companion object {
-        fun Serialize(inv: Array<ItemStack?>): String { // TODO Account for Armor and Shield slots.
+        fun serialize(inv: Array<ItemStack?>): String {
             val serializedItems = JSONArray()
             for (item in inv) {
                 if (item != null) {
@@ -23,7 +23,7 @@ class Serialization {
             mainObject["items"] = serializedItems
             return mainObject.toString()
         }
-        fun Deserialize(inv: String): Array<ItemStack> {
+        fun deserialize(inv: String): Array<ItemStack> {
             val parser = JSONParser()
             val parsedInventory = parser.parse(inv) as JSONObject
             val serializedItems = parsedInventory["items"] as JSONArray

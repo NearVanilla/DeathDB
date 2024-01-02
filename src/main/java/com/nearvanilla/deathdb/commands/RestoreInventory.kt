@@ -20,11 +20,7 @@ class RestoreInventory {
     @CommandMethod("restoreinventory|ri <player_name> <index>")
     @CommandPermission("deathdb.restoreinventory")
     @Suppress("unused")
-    fun restoreInventoryCommand(
-        sender: CommandSender,
-        @Argument("player_name") playerName: String,
-        @Argument("index") index: Int,
-    ) {
+    fun restoreInventoryCommand(sender: CommandSender, @Argument("player_name") playerName: String, @Argument("index") index: Int) {
         // If sender is not player.
         if (sender !is Player) {
             val noPlayerMsg = Component.text("This command can only be ran by players.")
@@ -83,7 +79,7 @@ class RestoreInventory {
             player.sendMessage(invalidPlayerMsg)
             return
         }
-        val deserializedInventory = Serialization.Deserialize(serializedInventory)
+        val deserializedInventory = Serialization.deserialize(serializedInventory)
         val currentInventory = targetOnlinePlayer.inventory.contents
         targetOnlinePlayer.inventory.clear()
         for (item in currentInventory) {

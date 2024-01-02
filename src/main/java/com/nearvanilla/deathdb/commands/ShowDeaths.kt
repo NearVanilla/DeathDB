@@ -24,10 +24,7 @@ class ShowDeaths {
     @CommandPermission("deathdb.showdeaths")
     @CommandMethod("showdeaths|sd <player_name>")
     @Suppress("unused")
-    fun showDeathsCommand(
-        sender: CommandSender,
-        @Argument("player_name") playerName: String,
-    ) {
+    fun showDeathsCommand(sender: CommandSender, @Argument("player_name") playerName: String) {
         if (sender !is Player) {
             val noPlayerMsg = Component.text("This command can only be ran by players.")
             sender.sendMessage(noPlayerMsg)
@@ -59,8 +56,9 @@ class ShowDeaths {
                 val posY = String.format("%.3f", results.getDouble("posY"))
                 val posZ = String.format("%.3f", results.getDouble("posZ"))
                 val formattedPosition = "$posX, $posY, $posZ"
+                // TODO Make clickable button to go to inventory.
                 val entryComponent = Component.text(
-                    "$index) $formattedDateTime | $formattedPosition\n", // TODO Make clickable button to go to inventory.
+                    "$index) $formattedDateTime | $formattedPosition\n",
                     NamedTextColor.GRAY,
                     TextDecoration.BOLD,
                 )

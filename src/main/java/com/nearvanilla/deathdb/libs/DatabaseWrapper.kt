@@ -8,7 +8,8 @@ import java.sql.ResultSet
 import java.time.Instant
 
 class DatabaseWrapper(dbPath: String) {
-    private val databaseConnection = DriverManager.getConnection("jdbc:sqlite:$dbPath") ?: throw DeathDBException("Failed to establish connection to database.")
+    private val databaseConnection = DriverManager.getConnection("jdbc:sqlite:$dbPath")
+        ?: throw DeathDBException("Failed to establish connection to database.")
 
     fun createDeathsTable() {
         try {
@@ -28,7 +29,7 @@ class DatabaseWrapper(dbPath: String) {
         addDeathStmt.setDouble(4, playerWhoDied.location.y)
         addDeathStmt.setDouble(5, playerWhoDied.location.z)
         addDeathStmt.setString(6, playerWhoDied.world.name)
-        addDeathStmt.setString(7, Serialization.Serialize(playerWhoDied.inventory.contents))
+        addDeathStmt.setString(7, Serialization.serialize(playerWhoDied.inventory.contents))
         addDeathStmt.execute()
     }
 

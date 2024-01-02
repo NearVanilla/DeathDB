@@ -87,5 +87,7 @@ class DeathDB : JavaPlugin() {
         logger.info("DeathDB has been enabled, enjoy!") // Log that plugin is enabled si.
     }
 
-    override fun onDisable() { logger.info("DeathDB has been disabled, goodbye!") }
+    override fun onDisable() {
+        logger.info("DeathDB has been disabled, goodbye!")
+    }
 }
